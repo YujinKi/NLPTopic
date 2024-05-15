@@ -22,7 +22,7 @@ This function is helpful for setting the direction of preprocessing'</tt> of tex
 <tt>'text\_preprocessing'</tt> function provide preprocessed corpus data containing converting to lowercase, removing punctuation marks, numbers, specific stopwords, and stripping extra whitespace. This function allows to solve the most basic text preprocessing procedures at once. 
 
   
-### finc_optimal_k 
+### find_optimal_k 
 
 <tt>'find\_optimal\_k'</tt> function can find the optimal number of topics. This function is for the following <tt>'topic\_models'</tt> function as we need to specify the number of topics $k$ in the context of <tt>'topic\_models'</tt> function. Two metrics "Griffiths2004" and "CaoJuan2009" from <tt>'FindTopicNumber'</tt> in <tt>'ldatuning'</tt> package is used by combining with weighted sum. The ratio of weighted sum can be set differently depending on the user's subjective view on the importance between two metrics. 
 
@@ -38,6 +38,40 @@ Ideally, the optimal number of topics obtained by <tt>'find\_optimal\_k'</tt> wo
 
 ## Example 
 
-This is the short example of conducting functions in this R package 
+This is the short example of conducting functions in this R package.
 
+```r
+
+data("acq", package = 'tm')
+acq[['110']]$content
+
+#-- extract_patterns
+
+# Patterns by text documents in corpus 
+patterns <- lapply(acq, extract_patterns)
+patterns$'110'
+
+# Patterns for entire corpus 
+pattten_entire <- extract_patterns(acq)
+pattten_entire
+
+#-- text_preprocessing 
+
+acq_preprocessed <- text_preprocessing(acq)
+acq_preprocessed[['110']]$content
+
+#-- find_optimal_k
+
+topic_range <- seq(from=3,to=18, by=1)
+optimal_k <- find_optimal_k(acq_preprocessed, weights = c(5,4), topic_range = topic_range)
+print(optimal_k)
+
+#-- topic_models
+
+lda.result <- topic_models(acq_preprocessed, k=optimal_k)
+lda.result$Top_words_by_topic
+lda.result$Latent_topic_prob
+lda.result$Highest_prop_topic
+
+```
 
